@@ -1,0 +1,24 @@
+---
+title: "{{projectCapitalized}}"
+description: "{{projectDescription}}"
+template: splash
+hero:
+  tagline: "{{projectDescription}}"
+  actions:
+    - text: Quick Start
+      link: /getting-started/quick-start/
+      icon: right-arrow
+      variant: primary
+    - text: View on GitHub
+      link: https://github.com/{{githubRepo}}
+      icon: external
+---
+
+import { Card, CardGrid, LinkCard } from '@astrojs/starlight/components';
+
+## Start Here
+
+<CardGrid>
+  <LinkCard title="Quick Start" description="Install the packages and use the bundle." href="/getting-started/quick-start/" />
+  <LinkCard title="API Reference" description="TypeScript API Reference for the core types." href="/api/typescript/" />
+</CardGrid>

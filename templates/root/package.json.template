@@ -1,39 +1,28 @@
 {
-  "name": "{{projectName}}",
-  "version": "0.1.0",
-  "description": "{{projectDescription}}",
-  "type": "module",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "exports": {
-    ".": {
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+    "name": "{{projectName}}-workspace",
+    "private": true,
+    "version": "0.1.0",
+    "description": "{{projectDescription}}",
+    "type": "module",
+    "license": "{{license}}",
+    "author": "{{authorName}} <{{authorEmail}}> ({{authorUrl}})",
+    "workspaces": [
+        "packages/*",
+        "apps/*"
+    ],
+    "scripts": {
+        "build": "pnpm --filter {{sdkName}} run build && pnpm --filter {{cliName}} run build && pnpm --filter {{docsName}} run build && pnpm --filter {{blogName}} run build && pnpm --filter {{webName}} run build",
+        "deploy:blog": "pnpm --filter {{blogName}} run build && netlify deploy --dir apps/blog/dist --prod",
+        "deploy:docs": "pnpm --filter {{docsName}} run build && netlify deploy --dir apps/docs/dist --prod",
+        "deploy:web": "pnpm --filter {{webName}} run build && netlify deploy --dir apps/web/dist --prod",
+        "test": "pnpm --filter {{sdkName}} run test",
+        "lint": "pnpm --filter {{sdkName}} run build && pnpm --filter {{sdkName}} run lint && pnpm --filter {{cliName}} run lint",
+        "deploy": "pnpm run deploy:blog"
+    },
+    "engines": {
+        "node": ">=20"
+    },
+    "devDependencies": {
+        "typescript": "^5.9.3"
     }
-  },
-  "files": [
-    "dist",
-    "README.md"
-  ],
-  "author": "{{authorName}} <{{authorEmail}}> ({{authorUrl}})",
-  "scripts": {
-    "build": "tsc",
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "lint": "tsc --noEmit"
-  },
-  "dependencies": {
-    "minions-sdk": "^0.2.3"{{dependenciesJson}}
-  },
-  "devDependencies": {
-    "@types/node": "^20.0.0",
-    "typescript": "^5.9.3",
-    "vitest": "^4.0.18"
-  },
-  "keywords": {{keywordsJson}},
-  "license": "{{license}}",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/{{githubRepo}}"
-  }
 }

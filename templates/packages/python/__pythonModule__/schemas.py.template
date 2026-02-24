@@ -1,0 +1,8 @@
+"""
+{{projectCapitalized}} SDK — Type Schemas
+Custom MinionType schemas for {{projectCapitalized}}.
+"""
+
+from minions.types import FieldDefinition, FieldValidation, MinionType
+
+{{pythonSchemas}}

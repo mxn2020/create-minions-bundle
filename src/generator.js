@@ -89,16 +89,11 @@ function collectTemplateFiles(dir) {
     return results;
 }
 
-/**
- * Resolve output path from template path.
- * Template directories use a flat mapping:
- * - templates/root/* → project root
- * - templates/github/* → .github/*
- * - templates/src/* → src/*
- */
 function resolveOutputPath(relPath, variables) {
-    let outputPath = relPath;
+    // Replace __pythonModule__ with actual python module name
+    let outputPath = relPath.replace(/__pythonModule__/g, variables.pythonModule);
 
+    // Map template directory prefixes to output paths
     if (outputPath.startsWith('root/')) {
         outputPath = outputPath.replace(/^root\//, '');
     } else if (outputPath.startsWith('github/')) {

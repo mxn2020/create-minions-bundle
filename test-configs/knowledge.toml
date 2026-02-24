@@ -1,0 +1,58 @@
+name = "minions-bundles-knowledge"
+description = "Knowledge management bundle — documents, concepts, citations"
+org = "mxn2020"
+
+[colors]
+accent = "#3B82F6"
+accent-hover = "#2563EB"
+
+[types.concept]
+description = "An abstract idea, entity, or topic"
+icon = "🧠"
+[types.concept.fields]
+name = "string"
+definition = "string"
+aliases = "string"
+
+[types.document]
+description = "A source of information (article, book, paper)"
+icon = "📄"
+[types.document.fields]
+title = "string"
+author = "string"
+url = "string"
+publishDate = "date"
+
+[types.researchNote]
+description = "A synthesized atom of knowledge"
+icon = "📝"
+[types.researchNote.fields]
+title = "string"
+body = "string"
+tags = "string"
+
+[types.citation]
+description = "A link between a note/concept and its source document"
+icon = "🔗"
+[types.citation.fields]
+sourceId = "string"
+targetId = "string"
+targetType = "select"
+pageOrQuote = "string"
+
+[relations]
+items = [
+  { from = "researchNote", relation = "explains", to = "concept" },
+  { from = "citation", relation = "cites", to = "document" }
+]
+
+[views.recentNotes]
+description = "Recently created research notes"
+type = "researchNote"
+
+[skills]
+context = "You relate discrete atoms of knowledge to source documents."
+rules = [
+  "When creating a research note, always link it to at least one concept",
+  "Always create citations to back up research notes if a source document exists"
+]

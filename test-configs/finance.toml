@@ -1,0 +1,76 @@
+name = "minions-bundles-finance"
+description = "Financial tracking bundle — budgets, expenses, invoices"
+org = "mxn2020"
+
+[colors]
+accent = "#10B981"
+accent-hover = "#059669"
+
+[types.client]
+description = "A person or company paying for services"
+icon = "🏢"
+[types.client.fields]
+name = "string"
+billingEmail = "string"
+address = "string"
+
+[types.budget]
+description = "Allocated funds for a specific period or project"
+icon = "🧮"
+[types.budget.fields]
+name = "string"
+amount = "number"
+currency = "string"
+periodStart = "date"
+periodEnd = "date"
+
+[types.expense]
+description = "A record of money spent"
+icon = "💳"
+[types.expense.fields]
+budgetId = "string"
+amount = "number"
+currency = "string"
+date = "date"
+category = "select"
+receiptUrl = "string"
+
+[types.invoice]
+description = "A bill sent to a client"
+icon = "🧾"
+[types.invoice.fields]
+clientId = "string"
+amount = "number"
+currency = "string"
+issueDate = "date"
+dueDate = "date"
+status = "select"
+
+[types.paymentRecord]
+description = "A record of money received against an invoice"
+icon = "💸"
+[types.paymentRecord.fields]
+invoiceId = "string"
+amount = "number"
+date = "date"
+method = "select"
+
+[relations]
+items = [
+  { from = "expense", relation = "deducted_from", to = "budget" },
+  { from = "invoice", relation = "billed_to", to = "client" },
+  { from = "paymentRecord", relation = "pays", to = "invoice" }
+]
+
+[views.unpaidInvoices]
+description = "Invoices that are issued but not fully paid"
+type = "invoice"
+[views.unpaidInvoices.filter]
+status = "=== 'issued'"
+
+[skills]
+context = "You track expenses, budgets, and client invoicing."
+rules = [
+  "Expenses must always indicate the correct currency",
+  "Payments cannot exceed the total invoice amount"
+]

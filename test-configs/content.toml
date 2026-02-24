@@ -1,0 +1,80 @@
+name = "minions-bundles-content"
+description = "Content pipeline bundle — drafts, publications, channels, campaigns"
+org = "mxn2020"
+
+[colors]
+accent = "#8B5CF6"
+accent-hover = "#7C3AED"
+
+[types.author]
+description = "A person who writes content"
+icon = "✍️"
+[types.author.fields]
+name = "string"
+bio = "string"
+twitter = "string"
+
+[types.contentBrief]
+description = "Instructions and goals for a new piece of content"
+icon = "📝"
+[types.contentBrief.fields]
+topic = "string"
+targetAudience = "string"
+keywords = "string"
+dueDate = "date"
+status = "select"
+
+[types.draft]
+description = "A work-in-progress piece of content"
+icon = "📄"
+[types.draft.fields]
+briefId = "string"
+authorId = "string"
+body = "string"
+wordCount = "number"
+status = "select"
+
+[types.publishedPiece]
+description = "A finalized, published content asset"
+icon = "✨"
+[types.publishedPiece.fields]
+draftId = "string"
+url = "string"
+publishedDate = "date"
+channelId = "string"
+
+[types.channel]
+description = "A distribution platform (blog, twitter, newsletter)"
+icon = "📢"
+[types.channel.fields]
+name = "string"
+url = "string"
+
+[types.campaign]
+description = "A marketing push grouping multiple pieces of content"
+icon = "🎯"
+[types.campaign.fields]
+name = "string"
+startDate = "date"
+endDate = "date"
+
+[relations]
+items = [
+  { from = "draft", relation = "fulfills", to = "contentBrief" },
+  { from = "publishedPiece", relation = "published_on", to = "channel" },
+  { from = "publishedPiece", relation = "part_of", to = "campaign" },
+  { from = "draft", relation = "written_by", to = "author" }
+]
+
+[views.readyToPublish]
+description = "Drafts approved but not yet published"
+type = "draft"
+[views.readyToPublish.filter]
+status = "=== 'approved'"
+
+[skills]
+context = "You manage a content creation and publication pipeline."
+rules = [
+  "Drafts must be linked to a brief",
+  "A draft cannot be marked approved without a word count > 0"
+]

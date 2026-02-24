@@ -1,0 +1,6 @@
+/**
+ * @module {{projectName}}/bundle
+ * MinionType definitions and imports for {{projectCapitalized}}.
+ */
+
+{{bundleTypesCode}}

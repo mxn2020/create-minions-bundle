@@ -1,0 +1,6 @@
+/**
+ * @module {{projectName}}/views
+ * Named query filters for {{projectCapitalized}}.
+ */
+
+{{viewsCode}}

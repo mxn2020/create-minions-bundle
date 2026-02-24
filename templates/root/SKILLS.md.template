@@ -1,0 +1,10 @@
+---
+name: {{projectName}}
+description: "Agent skills and schema rules for {{projectCapitalized}}."
+category: custom
+tags: ["bundle"]
+---
+
+# {{projectCapitalized}} Agent Skills
+
+{{skillsCode}}

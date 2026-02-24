@@ -1,0 +1,87 @@
+name = "minions-bundles-crm"
+description = "CRM pipeline bundle — leads, deals, interactions, sequences"
+org = "mxn2020"
+
+[colors]
+accent = "#E11D48"
+accent-hover = "#BE123C"
+
+[types.person]
+description = "A human being"
+icon = "👤"
+[types.person.fields]
+firstName = "string"
+lastName = "string"
+email = "string"
+phone = "string"
+
+[types.organization]
+description = "A company or other entity"
+icon = "🏢"
+[types.organization.fields]
+name = "string"
+website = "string"
+industry = "string"
+
+[types.lead]
+description = "A tracked relationship with a potential or existing client"
+icon = "🎯"
+extends = "person"
+[types.lead.fields]
+source = "string"
+status = "select"
+assignedTo = "string"
+estimatedValue = "number"
+currency = "string"
+nextActionDate = "date"
+lostReason = "string"
+qualificationScore = "number"
+
+[types.deal]
+description = "A concrete commercial opportunity"
+icon = "💰"
+[types.deal.fields]
+title = "string"
+leadId = "string"
+orgId = "string"
+stage = "select"
+value = "number"
+currency = "string"
+probability = "number"
+expectedCloseDate = "date"
+actualCloseDate = "date"
+lostReason = "string"
+
+[types.interaction]
+description = "A record of an interaction with a lead"
+icon = "💬"
+[types.interaction.fields]
+leadId = "string"
+type = "select"
+date = "date"
+notes = "string"
+outcome = "string"
+
+[relations]
+items = [
+  { from = "lead", relation = "works_at", to = "organization" },
+  { from = "deal", relation = "owned_by", to = "lead" },
+  { from = "interaction", relation = "with", to = "lead" },
+]
+
+[views.hotLeads]
+description = "Leads with high qualification score"
+type = "lead"
+[views.hotLeads.filter]
+qualificationScore = ">= 0.7"
+
+[views.stalledDeals]
+description = "Deals taking too long"
+type = "deal"
+
+[skills]
+context = "You manage relationship and pipeline data."
+rules = [
+  "Never update a deal stage without logging a decision",
+  "Never send outreach without an approved approval-request",
+]

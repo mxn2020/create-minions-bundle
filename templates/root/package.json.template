@@ -1,0 +1,39 @@
+{
+  "name": "{{projectName}}",
+  "version": "0.1.0",
+  "description": "{{projectDescription}}",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "author": "{{authorName}} <{{authorEmail}}> ({{authorUrl}})",
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "tsc --noEmit"
+  },
+  "dependencies": {
+    "minions-sdk": "^0.2.3"{{dependenciesJson}}
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.18"
+  },
+  "keywords": {{keywordsJson}},
+  "license": "{{license}}",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/{{githubRepo}}"
+  }
+}

@@ -1,0 +1,6 @@
+/**
+ * @module {{projectName}}/relations
+ * Relation definitions for {{projectCapitalized}}.
+ */
+
+{{relationsCode}}

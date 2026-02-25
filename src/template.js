@@ -22,7 +22,7 @@ import { generateBundleCode } from './bundle-codegen.js';
  * @returns {Record<string, string>}
  */
 export function buildVariables(config) {
-    const { bundleTypesCode, relationsCode, viewsCode, skillsCode, dependenciesJson } = generateBundleCode(config);
+    const { bundleTypesCode, relationsCode, viewsCode, skillsCode, dependenciesJson, pythonSchemas } = generateBundleCode(config);
 
     return {
         projectName: config.projectName,
@@ -56,5 +56,6 @@ export function buildVariables(config) {
         dependenciesJson,
         accentColor: config.accentColor,
         accentHoverColor: config.accentHoverColor,
+        pythonSchemas,
     };
 }

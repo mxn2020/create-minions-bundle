@@ -9,6 +9,7 @@ export function generateBundleCode(config) {
     let relationsCode = generateRelationsCode(config.relations);
     let viewsCode = generateViewsCode(config.views);
     let skillsCode = generateSkillsCode(config.skills, config.types);
+    let pythonSchemas = generatePythonSchemas(config.types);
 
     // Collect dependencies
     const dependenciesObj = {};
@@ -24,7 +25,8 @@ export function generateBundleCode(config) {
         relationsCode,
         viewsCode,
         skillsCode,
-        dependenciesJson
+        dependenciesJson,
+        pythonSchemas,
     };
 }
 
@@ -167,6 +169,54 @@ function generateSkillsCode(skillsDef, typesDef) {
             code += `\n`;
         }
     }
+
+    return code.trim();
+}
+
+function generatePythonSchemas(typesDef) {
+    if (!typesDef || Object.keys(typesDef).length === 0) {
+        return '# No custom types defined.\nBUNDLE_TYPES = []\n';
+    }
+
+    const typeFieldMap = {
+        string: 'str',
+        number: 'float',
+        boolean: 'bool',
+        date: 'str',
+        datetime: 'str',
+        select: 'str',
+    };
+
+    let code = '';
+    const classNames = [];
+
+    for (const [slug, def] of Object.entries(typesDef)) {
+        if (def.source && def.import) continue; // Skip imported types
+
+        const className = slug.charAt(0).toUpperCase() + slug.slice(1).replace(/[-_](\w)/g, (_, c) => c.toUpperCase());
+        const description = def.description || `Bundle type for ${className}`;
+        classNames.push(className);
+
+        code += `\nclass ${className}(MinionType):\n`;
+        code += `    """${description}"""\n`;
+        code += `    slug = "${slug}"\n`;
+        code += `    icon = "${def.icon || '📦'}"\n\n`;
+
+        if (def.fields && Object.keys(def.fields).length > 0) {
+            code += `    fields = [\n`;
+            for (const [fieldName, fieldType] of Object.entries(def.fields)) {
+                const pyType = typeFieldMap[fieldType] || 'str';
+                code += `        FieldDefinition(name="${fieldName}", type="${pyType}", label="${fieldName}"),\n`;
+            }
+            code += `    ]\n`;
+        } else {
+            code += `    fields = []\n`;
+        }
+
+        code += `\n`;
+    }
+
+    code += `\nBUNDLE_TYPES = [${classNames.join(', ')}]\n`;
 
     return code.trim();
 }

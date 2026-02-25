@@ -1,0 +1,52 @@
+name = "minions-bundles-portfolio"
+description = "Top-level structural organizational bundle — categories, ecosystems, projects"
+org = "mxn2020"
+
+[colors]
+accent = "#10B981"
+accent-hover = "#059669"
+
+[types.category]
+description = "High-level grouping mechanism"
+icon = "📁"
+[types.category.fields]
+name = "string"
+description = "string"
+
+[types.ecosystem]
+description = "A collection of related projects"
+icon = "🌐"
+[types.ecosystem.fields]
+name = "string"
+categoryId = "string"
+description = "string"
+
+[types.project]
+description = "A concrete implementation or initiative"
+icon = "🚀"
+[types.project.fields]
+name = "string"
+ecosystemId = "string"
+scale = "select"
+repoUrl = "string"
+status = "select"
+
+[relations]
+items = [
+  { from = "ecosystem", relation = "categorized_in", to = "category" },
+  { from = "project", relation = "part_of", to = "ecosystem" },
+  { from = "project", relation = "requires", to = "project" },
+]
+
+[views.activeProjects]
+description = "Projects currently in progress"
+type = "project"
+[views.activeProjects.filter]
+status = "active"
+
+[skills]
+context = "You organize high-level architecture hierarchies and project relationships."
+rules = [
+  "Always ensure a project belongs to an ecosystem",
+  "Projects required as dependencies must exist"
+]

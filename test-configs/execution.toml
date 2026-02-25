@@ -1,0 +1,43 @@
+name = "minions-bundles-execution"
+description = "Granular task management and daily tracking bundle — sprints, tasks, blockers"
+org = "mxn2020"
+
+[colors]
+accent = "#F59E0B"
+accent-hover = "#D97706"
+
+[types.task]
+description = "Granular unit of work"
+icon = "✅"
+[types.task.fields]
+title = "string"
+projectId = "string"
+priority = "number"
+targetDate = "date"
+status = "select"
+isTop3Today = "boolean"
+
+[types.dailySprint]
+description = "A focused daily work session"
+icon = "🏃"
+[types.dailySprint.fields]
+date = "date"
+notes = "string"
+
+[relations]
+items = [
+  { from = "task", relation = "included_in", to = "dailySprint" }
+]
+
+[views.dailyFocus]
+description = "The top 3 tasks assigned for today"
+type = "task"
+[views.dailyFocus.filter]
+isTop3Today = "true"
+
+[skills]
+context = "You manage granular day-to-day execution and priority sorting."
+rules = [
+  "Never assign more than 3 tasks as Top 3 for today",
+  "Ensure every task has a priority score"
+]

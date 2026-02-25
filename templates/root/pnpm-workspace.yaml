@@ -1,4 +1,4 @@
 packages:
   - 'packages/sdk'
-  - 'packages/cli'*
+  - 'packages/cli'
   - apps/*

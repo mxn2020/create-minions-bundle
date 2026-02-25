@@ -1,0 +1,53 @@
+name = "minions-bundles-ideation"
+description = "Brainstorming and early-stage planning bundle — ideas, feature specs, roadmaps"
+org = "mxn2020"
+
+[colors]
+accent = "#8B5CF6"
+accent-hover = "#7C3AED"
+
+[types.idea]
+description = "An unstructured thought or brainstorm"
+icon = "💡"
+[types.idea.fields]
+title = "string"
+description = "string"
+status = "select"
+rawNotes = "string"
+
+[types.featureSpec]
+description = "A detailed requirement document for a specific feature"
+icon = "📝"
+[types.featureSpec.fields]
+title = "string"
+ideaId = "string"
+requirements = "string"
+constraints = "string"
+
+[types.roadmapDoc]
+description = "A timeline and goal-oriented planning document"
+icon = "🗺️"
+[types.roadmapDoc.fields]
+title = "string"
+ideaId = "string"
+timeline = "string"
+goals = "string"
+
+[relations]
+items = [
+  { from = "featureSpec", relation = "specifies", to = "idea" },
+  { from = "roadmapDoc", relation = "plans", to = "idea" },
+]
+
+[views.activeIdeas]
+description = "Ideas currently in the brainstorming phase"
+type = "idea"
+[views.activeIdeas.filter]
+status = "raw"
+
+[skills]
+context = "You manage unstructured creative thoughts and product planning."
+rules = [
+  "Never delete an idea, always archive it",
+  "Ensure every feature spec links back to a parent idea"
+]

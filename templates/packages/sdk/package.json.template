@@ -24,7 +24,7 @@
     "docs": "typedoc"
   },
   "dependencies": {
-    "minions-sdk": "0.2.3"{{dependenciesJson}}
+    "minions-sdk": "0.2.4"{{dependenciesJson}}
   },
   "devDependencies": {
     "@types/node": "^25.3.0",

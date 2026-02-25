@@ -38,6 +38,7 @@ export function buildVariables(config) {
         pythonPackage: config.projectName,
         domainHelp: 'docs.minions.wtf',
         domainApp: 'app.minions.wtf',
+        domainBlog: 'blog.minions.wtf',
         projectDescription: config.projectDescription,
         authorName: config.authorName,
         authorEmail: config.authorEmail,

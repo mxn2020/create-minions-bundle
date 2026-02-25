@@ -86,12 +86,24 @@ export async function setupGitHub(config) {
         }
     }
 
+    if (process.env.PYPI_TOKEN) {
+        console.log(chalk.dim('  Setting PYPI_TOKEN secret...'));
+        try {
+            execSync(`gh secret set PYPI_TOKEN --body "${process.env.PYPI_TOKEN}"`, { cwd: projectDir, stdio: 'ignore' });
+        } catch (e) {
+            console.log(chalk.yellow('  Failed to set PYPI_TOKEN secret'));
+        }
+    }
+
     console.log(chalk.green(`\n  ✅ Repository created: https://github.com/${repoName}`));
     console.log(chalk.dim(`  Branches: main, dev (currently on dev)`));
     console.log('');
     console.log(chalk.yellow('  ⚠️  Manual steps required:'));
     if (!process.env.NPM_TOKEN) {
         console.log(chalk.dim('  • Add NPM_TOKEN secret to repository'));
+    }
+    if (!process.env.PYPI_TOKEN) {
+        console.log(chalk.dim('  • Add PYPI_TOKEN secret to repository'));
     }
     console.log(chalk.dim('  • Enable branch protection on main'));
     console.log(chalk.dim('  • See MANUAL.md for full details'));

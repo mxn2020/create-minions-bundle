@@ -10,6 +10,7 @@ export function generateBundleCode(config) {
     let viewsCode = generateViewsCode(config.views);
     let skillsCode = generateSkillsCode(config.skills, config.types);
     let pythonSchemas = generatePythonSchemas(config.types);
+    let bundleTestsCode = generateTypeScriptTests(config.types);
 
     // Collect dependencies
     const dependenciesObj = {};
@@ -27,6 +28,7 @@ export function generateBundleCode(config) {
         skillsCode,
         dependenciesJson,
         pythonSchemas,
+        bundleTestsCode,
     };
 }
 
@@ -219,4 +221,39 @@ function generatePythonSchemas(typesDef) {
     code += `\nBUNDLE_TYPES = [${classNames.join(', ')}]\n`;
 
     return code.trim();
+}
+
+function generateTypeScriptTests(typesDef) {
+    if (!typesDef || Object.keys(typesDef).length === 0) {
+        return '    // No custom bundle types defined.\n';
+    }
+
+    let testCode = '';
+
+    for (const [slug, def] of Object.entries(typesDef)) {
+        if (def.source && def.import) continue; // Skip imported types
+
+        const name = slug.charAt(0).toUpperCase() + slug.slice(1).replace(/[-_]/g, ' ');
+        const fields = def.fields || {};
+        const fieldNames = Object.keys(fields);
+        const tsVarName = `${slug.replace(/[-_]/g, '')}Type`;
+
+        testCode += `    it('should define the ${tsVarName} schema correctly', () => {\n`;
+        testCode += `        const type = bundleTypes.find(t => t.slug === '${slug}');\n`;
+        testCode += `        expect(type).toBeDefined();\n`;
+        testCode += `        expect(type?.name).toBe('${name}');\n`;
+        testCode += `        expect(type?.schema.length).toBe(${fieldNames.length});\n`;
+
+        if (fieldNames.length > 0) {
+            testCode += `\n`;
+            testCode += `        const fieldNames = type?.schema.map(f => f.name);\n`;
+            for (const fieldName of fieldNames) {
+                testCode += `        expect(fieldNames).toContain('${fieldName}');\n`;
+            }
+        }
+
+        testCode += `    });\n\n`;
+    }
+
+    return testCode.trimEnd();
 }

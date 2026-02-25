@@ -1,0 +1,18 @@
+import { describe, it, expect } from 'vitest';
+import { bundleTypes } from '../bundle.js';
+import { VERSION } from '../index.js';
+
+describe('Bundle SDK', () => {
+    it('should export a version string', () => {
+        expect(VERSION).toBeDefined();
+        expect(typeof VERSION).toBe('string');
+    });
+
+    it('should have bundleTypes array populated', () => {
+        expect(bundleTypes).toBeDefined();
+        expect(Array.isArray(bundleTypes)).toBe(true);
+        expect(bundleTypes.length).toBeGreaterThan(0);
+    });
+
+{{bundleTestsCode}}
+});

@@ -8,10 +8,7 @@
     "url": "https://github.com/{{githubRepo}}"
   },
   "homepage": "https://{{domainHelp}}",
-  "keywords": {
-    {keywordsJson
-    }
-  },
+  "keywords": {{keywordsJson}},
   "author": "{{authorName}} <{{authorEmail}}> ({{authorUrl}})",
   "type": "module",
   "bin": {

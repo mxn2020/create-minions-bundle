@@ -1,0 +1,361 @@
+name = "minions-bundles-agency"
+description = "Full-stack IT agency bundle — prospecting, outreach, CRM pipeline, delivery, billing, and client management for productized service businesses"
+org = "mxn2020"
+
+[colors]
+accent = "#6D28D9"
+accent-hover = "#5B21B6"
+
+# ─── POSITIONING & OFFERS ───
+
+[types.service-package]
+description = "A productized service offering with scope, pricing, and timeline"
+icon = "📦"
+[types.service-package.fields]
+name = "string"
+tier = "select"
+description = "string"
+scope = "string"
+techStack = "string"
+priceMin = "number"
+priceMax = "number"
+currency = "string"
+timelineDays = "number"
+deliverables = "string"
+
+[types.audience]
+description = "An ideal customer profile or target market segment"
+icon = "🎯"
+[types.audience.fields]
+name = "string"
+industry = "string"
+companySize = "string"
+location = "string"
+budgetRange = "string"
+painPoints = "string"
+currentSolution = "string"
+decisionMaker = "string"
+
+# ─── LEAD GEN & PROSPECTING ───
+
+[types.lead]
+description = "A potential prospect captured from scraping, referral, or inbound"
+icon = "📋"
+[types.lead.fields]
+company = "string"
+website = "string"
+contactName = "string"
+contactRole = "string"
+email = "string"
+phone = "string"
+source = "select"
+status = "select"
+audienceId = "string"
+notes = "string"
+capturedAt = "date"
+
+[types.site-audit]
+description = "An evaluation of a prospect's current website or digital presence"
+icon = "🔍"
+[types.site-audit.fields]
+leadId = "string"
+url = "string"
+mobileScore = "number"
+speedScore = "number"
+seoScore = "number"
+designNotes = "string"
+techStack = "string"
+issues = "string"
+opportunities = "string"
+auditedAt = "date"
+
+# ─── OUTREACH & EMAIL ───
+
+[types.sequence]
+description = "A multi-step email drip campaign with cadence and variants"
+icon = "📧"
+[types.sequence.fields]
+name = "string"
+audienceId = "string"
+steps = "number"
+cadenceDays = "string"
+status = "select"
+
+[types.email-step]
+description = "A single step in an outreach sequence"
+icon = "✉️"
+[types.email-step.fields]
+sequenceId = "string"
+stepNumber = "number"
+subject = "string"
+body = "string"
+variant = "string"
+delayDays = "number"
+
+[types.outreach-send]
+description = "A record of an email sent to a specific lead"
+icon = "📤"
+[types.outreach-send.fields]
+leadId = "string"
+emailStepId = "string"
+sentAt = "date"
+opened = "boolean"
+openedAt = "date"
+replied = "boolean"
+repliedAt = "date"
+bounced = "boolean"
+inboxId = "string"
+
+[types.inbox]
+description = "A sending email inbox with warmup and health tracking"
+icon = "📬"
+[types.inbox.fields]
+email = "string"
+domain = "string"
+provider = "string"
+warmupStatus = "select"
+warmupStartedAt = "date"
+dailySendLimit = "number"
+bounceRate = "number"
+reputationScore = "number"
+
+# ─── CRM PIPELINE ───
+
+[types.deal]
+description = "A commercial opportunity progressing through pipeline stages"
+icon = "💰"
+[types.deal.fields]
+title = "string"
+leadId = "string"
+servicePackageId = "string"
+stage = "select"
+value = "number"
+currency = "string"
+probability = "number"
+expectedCloseDate = "date"
+actualCloseDate = "date"
+lostReason = "string"
+assignedTo = "string"
+
+[types.meeting]
+description = "A scheduled call or meeting with a prospect or client"
+icon = "📅"
+[types.meeting.fields]
+dealId = "string"
+leadId = "string"
+type = "select"
+scheduledAt = "date"
+duration = "number"
+location = "string"
+agenda = "string"
+notes = "string"
+outcome = "string"
+followUpActions = "string"
+
+# ─── CLIENT & DELIVERY ───
+
+[types.client]
+description = "A won deal converted into an active client relationship"
+icon = "🤝"
+[types.client.fields]
+company = "string"
+primaryContact = "string"
+email = "string"
+phone = "string"
+dealId = "string"
+servicePackageId = "string"
+status = "select"
+onboardedAt = "date"
+
+[types.proposal]
+description = "A formal proposal document sent to a prospect"
+icon = "📄"
+[types.proposal.fields]
+dealId = "string"
+templateId = "string"
+title = "string"
+scope = "string"
+price = "number"
+currency = "string"
+validUntil = "date"
+status = "select"
+sentAt = "date"
+signedAt = "date"
+
+[types.contract]
+description = "A signed agreement governing a client engagement"
+icon = "📝"
+[types.contract.fields]
+clientId = "string"
+proposalId = "string"
+title = "string"
+startDate = "date"
+endDate = "date"
+value = "number"
+paymentTerms = "string"
+status = "select"
+signedAt = "date"
+
+[types.project]
+description = "A client project being delivered through defined stages"
+icon = "🚀"
+[types.project.fields]
+clientId = "string"
+contractId = "string"
+servicePackageId = "string"
+name = "string"
+stage = "select"
+startDate = "date"
+deadline = "date"
+budget = "number"
+completedAt = "date"
+
+# ─── BILLING ───
+
+[types.invoice]
+description = "A billing document tracking payment for services"
+icon = "💳"
+[types.invoice.fields]
+clientId = "string"
+projectId = "string"
+contractId = "string"
+invoiceNumber = "string"
+amount = "number"
+currency = "string"
+issuedAt = "date"
+dueDate = "date"
+paidAt = "date"
+status = "select"
+paymentMethod = "string"
+
+[types.retainer]
+description = "A recurring service agreement with periodic billing"
+icon = "🔄"
+[types.retainer.fields]
+clientId = "string"
+servicePackageId = "string"
+monthlyFee = "number"
+currency = "string"
+startDate = "date"
+renewalDate = "date"
+status = "select"
+scope = "string"
+
+# ─── SOCIAL PROOF ───
+
+[types.testimonial]
+description = "A client testimonial or case study for social proof"
+icon = "⭐"
+[types.testimonial.fields]
+clientId = "string"
+projectId = "string"
+contactName = "string"
+quote = "string"
+rating = "number"
+publishedAt = "date"
+approved = "boolean"
+platform = "string"
+
+# ─── TEMPLATES ───
+
+[types.template]
+description = "A reusable document template for proposals, contracts, emails, etc."
+icon = "📋"
+[types.template.fields]
+name = "string"
+category = "select"
+content = "string"
+variables = "string"
+version = "string"
+lastUsedAt = "date"
+
+# ─── RELATIONS ───
+
+[relations]
+items = [
+  # Lead gen flow
+  { from = "lead", relation = "targets", to = "audience" },
+  { from = "site-audit", relation = "evaluates", to = "lead" },
+  
+  # Outreach flow
+  { from = "sequence", relation = "targets", to = "audience" },
+  { from = "email-step", relation = "belongs_to", to = "sequence" },
+  { from = "outreach-send", relation = "sent_to", to = "lead" },
+  { from = "outreach-send", relation = "uses", to = "email-step" },
+  { from = "outreach-send", relation = "sent_from", to = "inbox" },
+  
+  # Pipeline flow
+  { from = "deal", relation = "converts", to = "lead" },
+  { from = "deal", relation = "offers", to = "service-package" },
+  { from = "meeting", relation = "belongs_to", to = "deal" },
+  { from = "meeting", relation = "with", to = "lead" },
+  { from = "proposal", relation = "belongs_to", to = "deal" },
+  { from = "proposal", relation = "uses", to = "template" },
+  
+  # Client flow
+  { from = "client", relation = "won_from", to = "deal" },
+  { from = "client", relation = "subscribed_to", to = "service-package" },
+  { from = "contract", relation = "governs", to = "client" },
+  { from = "contract", relation = "from_proposal", to = "proposal" },
+  { from = "project", relation = "for", to = "client" },
+  { from = "project", relation = "under", to = "contract" },
+  { from = "project", relation = "delivers", to = "service-package" },
+  
+  # Billing flow
+  { from = "invoice", relation = "bills", to = "client" },
+  { from = "invoice", relation = "for_project", to = "project" },
+  { from = "retainer", relation = "with", to = "client" },
+  { from = "retainer", relation = "provides", to = "service-package" },
+  
+  # Social proof
+  { from = "testimonial", relation = "from", to = "client" },
+  { from = "testimonial", relation = "about", to = "project" },
+]
+
+# ─── VIEWS ───
+
+[views.pipeline]
+description = "Active deals by pipeline stage"
+type = "deal"
+
+[views.hotLeads]
+description = "Leads ready for outreach or follow-up"
+type = "lead"
+[views.hotLeads.filter]
+status = "qualified"
+
+[views.activeProjects]
+description = "Projects currently in delivery"
+type = "project"
+
+[views.unpaidInvoices]
+description = "Invoices that are overdue or pending"
+type = "invoice"
+
+[views.activeSequences]
+description = "Running outreach sequences"
+type = "sequence"
+
+[views.upcomingMeetings]
+description = "Scheduled meetings this week"
+type = "meeting"
+
+[views.activeRetainers]
+description = "Currently active retainer agreements"
+type = "retainer"
+[views.activeRetainers.filter]
+status = "active"
+
+# ─── SKILLS ───
+
+[skills]
+context = "You manage a full IT agency pipeline from prospecting through delivery and billing. You track leads, run email sequences, manage deals through CRM stages, onboard clients, oversee project delivery, and handle invoicing."
+rules = [
+  "Never send outreach without verifying the email address first",
+  "Never move a deal to 'Won' without a signed contract",
+  "Always log a meeting note after every discovery call",
+  "Always create an invoice when a project milestone is completed",
+  "Never delete a lead — archive by setting status to 'disqualified'",
+  "Always link a testimonial to both the client and project",
+  "Track all outreach sends to avoid double-contacting a lead",
+]

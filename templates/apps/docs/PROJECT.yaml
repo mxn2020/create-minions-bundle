@@ -1,0 +1,3 @@
+category: minion-toolbox
+tags: [compliance, standard, for, {{docsname}}\ndescription:, definition, minion, toolbox]
+name: {{docsName}}\ndescription: Standard compliance definition for {{docsName}}\npriority: high\ntags:\n  - foundation\n  - ecosystem\ndeploy_url: null\n

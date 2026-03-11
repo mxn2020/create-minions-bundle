@@ -3,8 +3,14 @@
 /**
  * {{cliName}} — CLI for {{projectCapitalized}}
  *
- * Uses minions-sdk's JsonFileStorageAdapter for sharded, atomic file storage:
- *   <rootDir>/<id[0..1]>/<id[2..3]>/<id>.json
+ * Supports multiple storage backends via the MINIONS_BACKEND env var:
+ *   - json (default): JsonFileStorageAdapter — sharded, atomic file storage
+ *   - convex: ConvexStorageAdapter — Convex DB backend
+ *   - supabase: SupabaseStorageAdapter — Supabase/Postgres backend
+ *
+ * Optionally supports an index layer via MINIONS_INDEX env var:
+ *   - memory: MemoryIndexAdapter — in-process index
+ *   - supabase: SupabaseIndexAdapter — Supabase-backed index
  */
 
 import { Command } from 'commander';
@@ -15,13 +21,20 @@ import {
     softDelete,
     generateId,
     TypeRegistry,
+    Minions,
+    MemoryStorageAdapter,
+    ConvexStorageAdapter,
+    SupabaseStorageAdapter,
+    toIndexEntry,
+    MemoryIndexAdapter,
 } from 'minions-sdk';
-import type { Minion, StorageFilter } from 'minions-sdk';
-import { JsonFileStorageAdapter } from 'minions-sdk/node';
+import type { Minion, StorageFilter, StorageAdapter, IndexAdapter } from 'minions-sdk';
 import { bundleTypes as customTypes } from '{{sdkName}}';
 
 const program = new Command();
 const STORE_DIR = process.env.MINIONS_STORE || '.minions';
+const BACKEND = process.env.MINIONS_BACKEND || 'json';
+const INDEX_BACKEND = process.env.MINIONS_INDEX || '';
 
 // Register custom types
 const registry = new TypeRegistry();
@@ -29,13 +42,77 @@ for (const t of customTypes) {
     registry.register(t);
 }
 
-// Lazily initialize storage (async)
-let _storage: import('minions-sdk').StorageAdapter | null = null;
-async function getStorage() {
-    if (!_storage) {
-        _storage = await JsonFileStorageAdapter.create(STORE_DIR);
+// ─── Storage factory ───────────────────────────────────────
+let _storage: StorageAdapter | null = null;
+async function getStorage(): Promise<StorageAdapter> {
+    if (_storage) return _storage;
+
+    switch (BACKEND) {
+        case 'convex': {
+            const convexUrl = process.env.CONVEX_URL;
+            if (!convexUrl) {
+                console.error(chalk.red('CONVEX_URL env var is required for convex backend'));
+                process.exit(1);
+            }
+            const { ConvexClient } = await import('convex/browser');
+            const { api } = await import('../convex/_generated/api.js');
+            const client = new ConvexClient(convexUrl);
+            _storage = new ConvexStorageAdapter(client, {
+                functions: { get: api.minions.get, list: api.minions.list, set: api.minions.set, delete: api.minions.remove },
+            });
+            break;
+        }
+        case 'supabase': {
+            const supabaseUrl = process.env.SUPABASE_URL;
+            const supabaseKey = process.env.SUPABASE_ANON_KEY;
+            if (!supabaseUrl || !supabaseKey) {
+                console.error(chalk.red('SUPABASE_URL and SUPABASE_ANON_KEY env vars are required for supabase backend'));
+                process.exit(1);
+            }
+            const { createClient } = await import('@supabase/supabase-js');
+            const supabase = createClient(supabaseUrl, supabaseKey);
+            _storage = new SupabaseStorageAdapter(supabase as any);
+            break;
+        }
+        case 'memory':
+            _storage = new MemoryStorageAdapter();
+            break;
+        case 'json':
+        default: {
+            const { JsonFileStorageAdapter } = await import('minions-sdk/node');
+            _storage = await JsonFileStorageAdapter.create(STORE_DIR);
+            break;
+        }
     }
     return _storage;
+}
+
+// ─── Index factory (optional) ──────────────────────────────
+let _index: IndexAdapter | null = null;
+async function getIndex(): Promise<IndexAdapter | undefined> {
+    if (_index) return _index;
+    if (!INDEX_BACKEND) return undefined;
+
+    switch (INDEX_BACKEND) {
+        case 'memory':
+            _index = new MemoryIndexAdapter();
+            return _index;
+        case 'supabase': {
+            const { SupabaseIndexAdapter } = await import('minions-sdk');
+            const supabaseUrl = process.env.SUPABASE_URL;
+            const supabaseKey = process.env.SUPABASE_ANON_KEY;
+            if (!supabaseUrl || !supabaseKey) {
+                console.error(chalk.red('SUPABASE_URL and SUPABASE_ANON_KEY env vars are required for supabase index'));
+                process.exit(1);
+            }
+            const { createClient } = await import('@supabase/supabase-js');
+            const supabase = createClient(supabaseUrl, supabaseKey);
+            _index = new SupabaseIndexAdapter(supabase as any);
+            return _index;
+        }
+        default:
+            return undefined;
+    }
 }
 
 function findType(slug: string) {
@@ -61,11 +138,13 @@ program
         console.log(chalk.bold('{{projectCapitalized}}'));
         console.log(chalk.dim('{{projectDescription}}'));
         console.log('');
-        console.log(`  SDK:    ${chalk.cyan('{{sdkName}}')}`);
-        console.log(`  CLI:    ${chalk.cyan('{{cliName}}')}`);
-        console.log(`  Python: ${chalk.cyan('{{pythonPackage}}')}`);
-        console.log(`  Store:  ${chalk.cyan(STORE_DIR)}`);
-        console.log(`  Types:  ${chalk.cyan(String(customTypes.length))}`);
+        console.log(`  SDK:      ${chalk.cyan('{{sdkName}}')}`);
+        console.log(`  CLI:      ${chalk.cyan('{{cliName}}')}`);
+        console.log(`  Python:   ${chalk.cyan('{{pythonPackage}}')}`);
+        console.log(`  Backend:  ${chalk.cyan(BACKEND)}`);
+        console.log(`  Index:    ${chalk.cyan(INDEX_BACKEND || 'none')}`);
+        console.log(`  Store:    ${chalk.cyan(STORE_DIR)}`);
+        console.log(`  Types:    ${chalk.cyan(String(customTypes.length))}`);
     });
 
 // ─── types ─────────────────────────────────────────────────
@@ -138,6 +217,10 @@ program
         }, type);
 
         await storage.set(minion);
+
+        // Update index if configured
+        const index = await getIndex();
+        if (index) await index.upsert(toIndexEntry(minion));
 
         console.log(chalk.green(`\n  ✔ Created ${type.icon} ${type.name}`));
         console.log(`  ${chalk.dim('ID:')}    ${minion.id}`);
@@ -241,6 +324,10 @@ program
         const { minion: updated } = updateMinion(existing, { ...updates, updatedBy: 'cli' }, typeDefinition);
         await storage.set(updated);
 
+        // Update index if configured
+        const index = await getIndex();
+        if (index) await index.upsert(toIndexEntry(updated));
+
         const type = registry.getById(updated.minionTypeId);
         console.log(chalk.green(`\n  ✔ Updated ${type?.icon || '?'} ${updated.title}`));
         for (const [key, value] of Object.entries(updates)) {
@@ -268,12 +355,16 @@ program
             process.exit(1);
         }
 
+        const index = await getIndex();
+
         if (opts.hard) {
             await storage.delete(id);
+            if (index) await index.remove(id);
             console.log(chalk.yellow(`\n  🗑  Permanently deleted ${id}\n`));
         } else {
             const deleted = softDelete(existing, 'cli');
             await storage.set(deleted);
+            if (index) await index.upsert(toIndexEntry(deleted));
             console.log(chalk.yellow(`\n  ✔ Soft-deleted ${existing.title}`));
             console.log(chalk.dim(`    Use --hard to permanently remove\n`));
         }

@@ -1,5 +1,7 @@
 name: create-minions-bundle
-description: Scaffold curated workflow bundles of MinionTypes, relations, and views
+project_scope: main
+project_type: monorepo
+description: "Scaffold curated workflow bundles of MinionTypes, relations, and views"
 tier: prototype
 lane: minions
 priority: medium
@@ -8,5 +10,7 @@ stack: [javascript]
 repo: "https://github.com/mxn2020/create-minions-bundle"
 deploy_url: null
 last_active: 2026-02-25
-tags: []
-notes: 
+tags: [bundle, minions, create, minion, toolbox, ecosystem]
+notes: null
+id: 0c4ba8e4-5467-4e6b-9e1c-8b580689db45
+category: minion-toolbox
